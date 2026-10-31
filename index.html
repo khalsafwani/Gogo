@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#083A4F">
+<title>مُعلِّم AI — جوجو يحب الإنجليزية</title>
+<style>
+:root{
+  --deep:#083A4F; --sea:#0E6A7A; --foam:#EAF6F3; --paper:#FFFFFF; --sand:#F6E7BD;
+  --gold:#F0B429; --gogo:#E4472F; --kelp:#2F9E6E; --ink:#0A2B3D; --mute:#5C7C88; --line:#CFE3E0;
+  --ok:#DDF3E8; --bad:#FBE1DC;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--foam);color:var(--ink);font-family:"Noto Kufi Arabic","Segoe UI",Tahoma,system-ui,sans-serif;line-height:1.7}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.en{direction:ltr;unicode-bidi:isolate;text-align:left;font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;font-weight:600}
+#app{max-width:560px;margin:0 auto;min-height:100vh;padding-bottom:84px}
+.screen{padding:0 16px 24px}
+h1,h2,h3{line-height:1.3;margin:0}
+h2{font-size:22px;margin:14px 0 6px}
+h3{font-size:15px;margin:18px 0 6px;color:var(--sea)}
+p{margin:6px 0}
+
+/* hero */
+.hero{background:var(--deep);color:#fff;margin:0 -16px;padding:22px 20px 56px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:34px;background:var(--foam);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 34' preserveAspectRatio='none'%3E%3Cpath d='M0 20 Q50 0 100 16 T200 16 T300 16 T400 14 V34 H0Z'/%3E%3C/svg%3E") center/100% 100%;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 34' preserveAspectRatio='none'%3E%3Cpath d='M0 20 Q50 0 100 16 T200 16 T300 16 T400 14 V34 H0Z'/%3E%3C/svg%3E") center/100% 100%}
+.hero .brand{font-size:15px;opacity:.85}
+.hero h1{font-size:30px;margin-top:6px}
+.hero .book{font-size:34px;font-weight:800;color:var(--sand);margin-top:8px;line-height:1.1}
+.hero .gogo{position:absolute;left:14px;top:14px;font-size:64px;filter:drop-shadow(0 4px 0 rgba(0,0,0,.2))}
+.bubble-bg{position:absolute;border:2px solid rgba(255,255,255,.25);border-radius:50%}
+.coins{display:inline-flex;gap:6px;align-items:center;background:var(--gold);color:var(--deep);border-radius:99px;padding:4px 14px;font-weight:800;margin-top:14px}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:10px 20px;border-radius:14px;font-weight:700;background:var(--paper);border:2px solid var(--line);width:100%}
+.btn.primary{background:var(--gogo);border-color:var(--gogo);color:#fff;box-shadow:0 4px 0 #A92F1D}
+.btn.primary:active{transform:translateY(3px);box-shadow:0 1px 0 #A92F1D}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:var(--deep)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;box-shadow:none;cursor:default}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+
+/* cards */
+.panel{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:14px 16px;margin-top:12px}
+.panel.next{border-color:var(--gogo)}
+.ring{width:84px;height:84px;flex:none}
+.flex{display:flex;align-items:center;gap:14px}
+.mute{color:var(--mute);font-size:13px}
+.chip{display:inline-block;background:var(--sand);color:#6B5310;border-radius:8px;padding:0 8px;font-size:12px;font-weight:700}
+.chip.src{background:#DFF0F5;color:var(--sea)}
+
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--paper);border-top:2px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+.nav>div{display:flex;width:100%;max-width:560px}
+.nav button{flex:1;padding:8px 0 6px;font-size:12px;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:0}
+.nav button span{font-size:22px;line-height:1.2}
+.nav button.on{color:var(--gogo);font-weight:800}
+
+/* treasure map path */
+.path{position:relative;margin:10px 0 0;padding-right:0}
+.stop{display:flex;gap:14px;align-items:stretch;text-align:right;width:100%}
+.stop .rail{width:44px;display:flex;flex-direction:column;align-items:center;flex:none}
+.stop .node{width:42px;height:42px;border-radius:50%;background:var(--paper);border:3px solid var(--sea);display:grid;place-items:center;font-weight:800;color:var(--sea);flex:none}
+.stop.done .node{background:var(--gold);border-color:var(--gold);color:var(--deep)}
+.stop.todo .node{border-color:var(--line);color:var(--mute)}
+.stop .line{flex:1;width:0;border-right:3px dashed var(--line);margin-top:2px;min-height:14px}
+.stop:last-child .line{display:none}
+.stop .body{flex:1;padding:2px 0 16px}
+.stop .t{font-weight:800}
+.stop.todo .t,.stop.todo .mute{opacity:.55}
+
+/* runner */
+.rtop{display:flex;align-items:center;gap:12px;padding:14px 0 6px;position:sticky;top:0;background:var(--foam);z-index:4}
+.rtop .x{width:38px;height:38px;border-radius:50%;background:var(--paper);border:2px solid var(--line);font-weight:800}
+.rtop .bar{flex:1;height:12px;background:var(--line);border-radius:9px;overflow:hidden}
+.rtop .bar i{display:block;height:100%;background:var(--gold);border-radius:9px;transition:width .3s}
+.rtop .cnt{font-size:12px;color:var(--mute);min-width:34px}
+.foot{display:flex;gap:10px;margin-top:18px}
+.foot .btn.ghost{width:auto;flex:none;padding:10px 16px}
+.big{font-size:60px;text-align:center}
+.lead{font-size:16px}
+.goals{padding:0 20px 0 0;margin:0}
+.goals li{margin:6px 0}
+
+.chat{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.bubble{position:relative;background:var(--paper);border:2px solid var(--line);border-radius:18px 18px 18px 4px;padding:8px 14px 8px 48px;max-width:92%}
+.bubble.b2{align-self:flex-start;background:#FFF6DC;border-color:#F0DFA6;border-radius:18px 18px 4px 18px}
+.bubble .ar{font-size:13px;color:var(--mute)}
+.spk{position:absolute;left:8px;top:8px;width:34px;height:34px;border-radius:50%;background:var(--foam);font-size:16px}
+.note{font-size:12.5px;color:var(--mute);margin-top:12px}
+.note.ai,.ai-box{background:#EFE8FB;border:2px dashed #B7A3E0;border-radius:12px;padding:8px 12px;color:#43306E}
+.ai-box{margin-top:14px;font-size:14px}
+.ai-box b{display:block;font-size:12px;margin-bottom:2px}
+
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.vcard{background:var(--paper);border:2px solid var(--line);border-radius:6px 22px 6px 22px;padding:10px 8px;text-align:center;position:relative;display:flex;flex-direction:column;gap:2px;align-items:center}
+.vcard:active{border-color:var(--gold)}
+.vcard .em{font-size:34px;line-height:1.2}
+.vcard .en{font-size:14px;text-align:center}
+.vcard .ar{font-size:12px;color:var(--mute)}
+.vcard .hear{position:absolute;top:4px;left:8px;font-size:12px;opacity:.6}
+.bonus{margin-top:12px;background:var(--sand);border-radius:12px;padding:8px 12px;font-size:14px}
+
+.qa{margin-top:10px}
+.qa .en{font-size:16px}
+.qa .ar{font-size:12.5px;color:var(--mute);font-weight:400}
+.qa .a{margin-top:2px;padding-right:12px;border-right:4px solid var(--gold)}
+.frame{background:var(--paper);border:2px dashed var(--line);border-radius:10px;padding:6px 12px;margin-top:8px}
+
+.sgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.sbtn{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:8px 2px;text-align:center}
+.sbtn .em{font-size:30px;display:block}
+.sbtn .en{font-size:16px;text-align:center}
+mark{background:var(--gold);color:var(--deep);border-radius:4px;padding:0 1px}
+
+.q{margin-top:14px}
+.qtext{font-size:17px;font-weight:700}
+.qtext.en{font-size:18px}
+.opts{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.opt{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:11px 14px;text-align:right;min-height:48px;font-weight:600}
+.opt.en{text-align:left}
+.opt.right{background:var(--ok);border-color:var(--kelp)}
+.opt.wrong{background:var(--bad);border-color:var(--gogo)}
+.fb{margin-top:10px;padding:10px 14px;border-radius:12px;font-weight:600;font-size:14px}
+.fb.ok{background:var(--ok);color:#12633F}
+.fb.no{background:var(--bad);color:#8C2314}
+.fb small{display:block;font-weight:400;margin-top:2px}
+.passage{background:#FFFBEF;border:2px solid #F0DFA6;border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.8;margin-top:10px}
+.sub{border-top:2px dashed var(--line);margin-top:16px;padding-top:2px}
+
+.tokens{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;direction:ltr}
+.tok{background:var(--paper);border:2px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700;font-family:"Trebuchet MS",system-ui,sans-serif}
+.tok.used{opacity:.25}
+.drop{min-height:54px;border:2px dashed var(--sea);border-radius:14px;padding:6px;margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;direction:ltr;background:#fff}
+.drop.right{border-color:var(--kelp);background:var(--ok)}
+.drop.wrong{border-color:var(--gogo);background:var(--bad)}
+.mcols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.mcols .opt{padding:9px 8px;text-align:center;font-size:15px}
+.mcols .opt.sel{border-color:var(--gold);background:#FFF6DC}
+.mcols .opt.matched{background:var(--ok);border-color:var(--kelp);opacity:.75}
+.mcols .opt.shake{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+input.ans{width:100%;direction:ltr;text-align:left;font-size:20px;font-weight:700;padding:12px 14px;border-radius:14px;border:2px solid var(--line);margin-top:10px;font-family:"Trebuchet MS",system-ui,sans-serif}
+input.ans:focus{outline:3px solid var(--gold);border-color:var(--gold)}
+.listenbtn{width:84px;height:84px;border-radius:50%;background:var(--sea);color:#fff;font-size:34px;display:block;margin:12px auto 0;box-shadow:0 5px 0 var(--deep)}
+.listenbtn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--deep)}
+
+/* results */
+.result{text-align:center;padding-top:30px}
+.stars{font-size:44px;letter-spacing:4px}
+.pts{display:inline-block;background:var(--gold);color:var(--deep);border-radius:99px;font-weight:800;padding:4px 18px;margin:6px 0}
+.badge{display:flex;gap:10px;align-items:center;margin-top:8px}
+.badge .em{font-size:30px;filter:grayscale(1);opacity:.35}
+.badge.on .em{filter:none;opacity:1}
+.badge.on b{color:var(--deep)}
+.flip{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.flip .em{font-size:64px}
+.flip .en{font-size:24px;text-align:center}
+.flip .ar{font-size:19px;color:var(--sea);font-weight:800}
+#toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 16px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;max-width:90%}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status"></div>
+<!--BOOKDATA-->
+<script>
+/* بيانات كتاب: Gogo Loves English 6 (Pearson Longman)
+   - النص الإنجليزي والأمثلة من الكتاب، والأرقام (ص) هي أرقام صفحات الكتاب المطبوعة.
+   - الترجمة العربية والشروح التي تحمل ai:true إضافات من المنصة وليست من الكتاب.
+   لإضافة كتاب جديد: أنشئ ملفًا مثل هذا وسجّله في window.BOOKS ثم أضف وسم script له. */
+(function () {
+  window.BOOKS = window.BOOKS || {};
+
+  var BLENDS = ['br', 'cr', 'dr', 'fr', 'gr', 'pr', 'tr'];
+  function shuf(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  // ---------- بناة التمارين ----------
+  function mcq(q, opts, answer, why, extra) { return Object.assign({ t: 'ex', kind: 'mcq', q: q, opts: opts, answer: answer, why: why || '' }, extra || {}); }
+  function listen(say, opts, answer, why) { return { t: 'ex', kind: 'listen', say: say, opts: opts, answer: answer, why: why || '' }; }
+  function order(prompt, answer, why, alts) { return { t: 'ex', kind: 'order', prompt: prompt, answer: answer, alts: alts || [], why: why || '' }; }
+  function match(prompt, pairs) { return { t: 'ex', kind: 'match', prompt: prompt, pairs: pairs }; }
+  function type(prompt, answer, why, hint) { return { t: 'ex', kind: 'type', prompt: prompt, answer: answer, why: why || '', hint: hint || '' }; }
+  function blend(word, pre, emoji, src) {
+    var others = shuf(BLENDS.filter(function (b) { return b !== pre; })).slice(0, 3);
+    var masked = word.replace(pre, '__');
+    return mcq(emoji + '  ' + masked + '  — اختر الحرفين الناقصين', shuf([pre].concat(others)), pre, 'الكلمة هي ' + word + '.', { en: true });
+  }
+  function V(en, ar, emoji, say) { return { en: en, ar: ar, emoji: emoji, say: say || en }; }
+
+  // ---------- الوحدة 1 ----------
+  var quantityPairs = [['a bag of', 'chips'], ['a bar of', 'soap'], ['a tube of', 'toothpaste'], ['a slice of', 'pizza'], ['a carton of', 'ice cream'], ['a roll of', 'toilet paper']];
+
+  var u1 = {
+    id: 'u1', n: 1, page: 3,
+    title: "What's that, Gogo?", ar: 'ما هذا يا جوجو؟',
+    fn: 'مراجعة كتاب الطالب 5: الماضي والمستقبل مع أسماء الأغراض',
+    lessons: [
+      {
+        id: 'u1l1', title: 'المحادثة والمفردات', ar: 'زجاجة قديمة على الشاطئ',
+        steps: [
+          { t: 'intro', emoji: '🍾', title: 'ما هذا يا جوجو؟', src: 'ص 3–4',
+            text: 'يجد الأصدقاء زجاجة قديمة على الشاطئ. ستتعلم كيف نسأل عن شيء ونصفه، وأسماء أغراض نشتريها من المتجر.',
+            goals: ['أفهم المحادثة وأتتبع الأسئلة والإجابات القصيرة', 'أتعلم 10 تعابير للكمية مثل <span class="en" dir="ltr">a bag of chips</span>', 'أسأل عن الماضي والمستقبل: <span class="en" dir="ltr">Did you…? / What are you going to…?</span>'] },
+          { t: 'dialogue', title: 'Conversation', src: 'ص 3', lines: [
+            { en: "Brrr! It's cold and windy today. What's that?", ar: 'برر! الجو بارد وعاصف اليوم. ما هذا؟' },
+            { en: "It's a bottle of juice!", ar: 'إنها زجاجة عصير!' },
+            { en: "That's not juice! Look!", ar: 'هذا ليس عصيرًا! انظر!' },
+            { en: "It's an old bottle.", ar: 'إنها زجاجة قديمة.' },
+            { en: 'Is it a message?', ar: 'هل هي رسالة؟' },
+            { en: "No, it's not a message.", ar: 'لا، ليست رسالة.' },
+            { en: 'Is it a picture?', ar: 'هل هي صورة؟' },
+            { en: "I don't know.", ar: 'لا أعرف.' }] },
+          { t: 'vocab', title: 'Vocabulary', src: 'ص 4', bonus: 'get → got • bring → brought • have → had', cards: [
+            V('a piece of candy', 'قطعة حلوى', '🍬'), V('a carton of ice cream', 'علبة كرتون من الآيس كريم', '🍦'),
+            V('a slice of pizza', 'شريحة بيتزا', '🍕'), V('a package of cookies', 'عبوة بسكويت', '🍪'),
+            V('a bag of chips', 'كيس شيبس', '🍟'), V('a bottle of shampoo', 'زجاجة شامبو', '🧴'),
+            V('a bar of soap', 'قطعة صابون', '🧼'), V('a tube of toothpaste', 'أنبوب معجون أسنان', '🪥'),
+            V('a box of tissues', 'علبة مناديل', '📦'), V('a roll of toilet paper', 'رول ورق تواليت', '🧻')] },
+          { t: 'target', title: 'Review', src: 'ص 4', rows: [
+            { q: 'Did you have any snacks at the party?', a: 'Yes, I did. I had a bag of chips.', qAr: 'هل تناولتَ وجبات خفيفة في الحفلة؟', aAr: 'نعم. تناولتُ كيس شيبس.' },
+            { q: 'What are you going to get at the store?', a: "I'm going to get a tube of toothpaste.", qAr: 'ماذا ستشتري من المتجر؟', aAr: 'سأشتري أنبوب معجون أسنان.' }],
+            rule: { ai: true, title: 'ملاحظة من المنصة', text: 'السؤال بـ <span class="en" dir="ltr">Did…?</span> عن الماضي، والجواب <span class="en" dir="ltr">Yes, I did.</span> أما <span class="en" dir="ltr">be going to</span> فللحديث عن المستقبل. وكلمات مثل <span class="en" dir="ltr">bag / bar / tube / slice</span> تأتي قبل <span class="en" dir="ltr">of</span> لتبيّن الكمية أو العبوة.' } },
+          mcq('🧼  أي تعبير يناسب هذه الصورة؟', ['a bar of soap', 'a box of tissues', 'a tube of toothpaste', 'a roll of toilet paper'], 'a bar of soap', 'قطعة الصابون: a bar of soap.', { en: true }),
+          match('طابق بداية التعبير بنهايته', quantityPairs),
+          mcq('Did you have any snacks at the party?', ['Yes, I did. I had a bag of chips.', "Yes, I'm going to. I have a bag of chips.", 'No, I am. I had a bag of chips.', "Yes, it's a bag of chips."], 'Yes, I did. I had a bag of chips.', 'السؤال بصيغة Did فجوابه Yes, I did ثم الفعل في الماضي: had.', { en: true }),
+          order('رتّب الكلمات لتكوّن الجواب', "I'm going to get a tube of toothpaste.", 'جواب سؤال المستقبل: I\'m going to + get.'),
+          order('رتّب الكلمات لتكوّن السؤال', 'What are you going to get at the store?', 'سؤال عن المستقبل يبدأ بـ What are you going to…'),
+          listen('a slice of pizza', ['a slice of pizza', 'a bag of chips', 'a piece of candy', 'a bar of soap'], 'a slice of pizza', 'سمعتَ: a slice of pizza (شريحة بيتزا).'),
+          type('get → ؟ (الماضي)', 'got', 'الماضي من get هو got.', 'Bonus ص 4'),
+          type('bring → ؟ (الماضي)', 'brought', 'الماضي من bring هو brought.', 'Bonus ص 4'),
+          type('have → ؟ (الماضي)', 'had', 'الماضي من have هو had.', 'Bonus ص 4'),
+          { t: 'summary', items: ['<span class="en" dir="ltr">a bag / bar / tube / slice / box / roll / carton / piece / bottle / package of …</span>', '<span class="en" dir="ltr">Did you have…? Yes, I did.</span>', '<span class="en" dir="ltr">What are you going to get? I\'m going to get…</span>', '<span class="en" dir="ltr">get → got • bring → brought • have → had</span>'] }
+        ]
+      },
+      {
+        id: 'u1l2', title: 'القراءة وأصوات الحروف', ar: 'حفلة عيد الميلاد ويوم التسوق',
+        steps: [
+          { t: 'intro', emoji: '🎂', title: 'اقرأ وأجب', src: 'ص 7–8',
+            text: 'ستقرأ نصّين قصيرين من الكتاب وتجيب عن أسئلتهما، ثم تتدرّب على أصوات حروف متجاورة مثل tr و br و fr.',
+            goals: ['أقرأ نصًّا وأستخرج الجواب منه', 'أميّز بين أحداث الأمس وخطط الغد', 'أنطق مجموعات الحروف br • cr • dr • fr • gr • pr • tr'] },
+          { t: 'read', title: 'Activity 1', src: 'ص 7',
+            text: "Yesterday was April 9th. It was my birthday. I had a party. I ate too much. Mike brought a carton of ice cream. Janet brought some candy. Jenny brought a package of cookies. My mom made pizza. I ate three slices of pizza. Then I ate a lot of cookies, candy and ice cream. After the party, I didn't feel very well.",
+            qs: [
+              mcq('When was the girl\'s birthday?', ['It was April 9th.', 'It was April 19th.', 'It was March 9th.', 'It was May 9th.'], 'It was April 9th.', 'النص يبدأ: Yesterday was April 9th.', { en: true }),
+              mcq('Who brought a carton of ice cream?', ['Mike', 'Janet', 'Jenny', 'Her mom'], 'Mike', 'Mike brought a carton of ice cream.', { en: true }),
+              mcq('What did Jenny bring?', ['A package of cookies', 'Some candy', 'A carton of ice cream', 'Pizza'], 'A package of cookies', 'Jenny brought a package of cookies.', { en: true }),
+              mcq('Who made the pizza?', ['Her mom', 'Mike', 'Janet', 'Jenny'], 'Her mom', 'My mom made pizza.', { en: true })] },
+          { t: 'read', title: 'Activity 2', src: 'ص 7',
+            text: "Tomorrow is our shopping day! We're going to the Big Blue Department Store. I'm going to buy a tube of toothpaste and a toothbrush. My dad's going to buy a box of tissues. My mom and sister are going to look for a new bottle of shampoo. I like going shopping!",
+            qs: [
+              mcq("Where's the family going?", ['To the Big Blue Department Store', 'To the beach', 'To a birthday party', 'To the bank'], 'To the Big Blue Department Store', "We're going to the Big Blue Department Store.", { en: true }),
+              mcq("What's the boy going to buy?", ['A tube of toothpaste and a toothbrush', 'A box of tissues', 'A bottle of shampoo', 'A bar of soap'], 'A tube of toothpaste and a toothbrush', "I'm going to buy a tube of toothpaste and a toothbrush.", { en: true }),
+              mcq("What's the boy's dad going to buy?", ['A box of tissues', 'A bottle of shampoo', 'A tube of toothpaste', 'A roll of toilet paper'], 'A box of tissues', "My dad's going to buy a box of tissues.", { en: true }),
+              mcq('What are his mom and sister going to look for?', ['A new bottle of shampoo', 'A box of tissues', 'A toothbrush', 'A carton of ice cream'], 'A new bottle of shampoo', 'My mom and sister are going to look for a new bottle of shampoo.', { en: true })] },
+          { t: 'sounds', title: 'Sounds and words', src: 'ص 8', items: [
+            { w: 'crown', hl: 'cr', emoji: '👑' }, { w: 'frog', hl: 'fr', emoji: '🐸' }, { w: 'bride', hl: 'br', emoji: '👰' },
+            { w: 'drum', hl: 'dr', emoji: '🥁' }, { w: 'grass', hl: 'gr', emoji: '🌿' }, { w: 'tree', hl: 'tr', emoji: '🌳' }],
+            note: 'الكتاب يطلب: كوّن أكبر عدد من الكلمات بهذه المجموعات: br cr dr fr gr pr tr' },
+          blend('tree', 'tr', '🌳'), blend('crocodile', 'cr', '🐊'), blend('friend', 'fr', '🧑‍🤝‍🧑'),
+          blend('green', 'gr', '🟢'), blend('presents', 'pr', '🎁'), blend('broom', 'br', '🧹'),
+          listen('frog', ['frog', 'crown', 'drum', 'tree'], 'frog', 'سمعتَ: frog (ضفدع).'),
+          { t: 'summary', items: ['<span class="en" dir="ltr">Yesterday → had / ate / brought / made</span>', '<span class="en" dir="ltr">Tomorrow → is going to buy / look for</span>', '<span class="en" dir="ltr">br • cr • dr • fr • gr • pr • tr</span>'] }
+        ]
+      }
+    ],
+    quiz: [
+      mcq('🍬  اختر التعبير الصحيح', ['a piece of candy', 'a slice of pizza', 'a bag of chips', 'a bar of soap'], 'a piece of candy', '', { en: true }),
+      mcq('Did you have any snacks at the party?', ['Yes, I did. I had a bag of chips.', "Yes, I'm going to.", 'No, it is.', 'I am going to get chips.'], 'Yes, I did. I had a bag of chips.', 'Did → Yes, I did.', { en: true }),
+      order('رتّب الكلمات', "I'm going to get a tube of toothpaste.", ''),
+      listen('a roll of toilet paper', ['a roll of toilet paper', 'a box of tissues', 'a bottle of shampoo', 'a carton of ice cream'], 'a roll of toilet paper'),
+      type('bring → ؟ (الماضي)', 'brought', 'bring → brought'),
+      blend('frog', 'fr', '🐸'),
+      mcq('في قصة عيد الميلاد: Who made the pizza?', ['Her mom', 'Mike', 'Janet', 'Jenny'], 'Her mom', 'My mom made pizza.', { en: true }),
+      match('طابق بداية التعبير بنهايته', quantityPairs)
+    ]
+  };
+
+  // ---------- الوحدة 2 ----------
+  var compPairs = [['big', 'bigger'], ['tall', 'taller'], ['slow', 'slower'], ['small', 'smaller'], ['thin', 'thinner'], ['fast', 'faster']];
+  var u2 = {
+    id: 'u2', n: 2, page: 9,
+    title: "My room's cleaner than Jenny's!", ar: 'غرفتي أنظف من غرفة جيني!',
+    fn: 'مقارنة الأشخاص والحيوانات والأشياء',
+    lessons: [
+      {
+        id: 'u2l1', title: 'المقارنة بين شيئين', ar: 'bigger • older • faster',
+        steps: [
+          { t: 'intro', emoji: '🗺️', title: 'خريطة الكنز', src: 'ص 9–12',
+            text: 'يجد الأصدقاء خريطة قديمة ويتجادلون: من أسرع؟ وأي الحيوانين أكبر؟ ستتعلم المقارنة بين شيئين.',
+            goals: ['أفهم المحادثة وأتعرف على الصفات ومقارناتها', 'أكوّن المقارنة: <span class="en" dir="ltr">big → bigger</span>', 'أسأل وأجيب: <span class="en" dir="ltr">Who\'s faster, Tony or Jenny?</span>'] },
+          { t: 'dialogue', title: 'Conversation', src: 'ص 9', lines: [
+            { en: "It's a map, Gogo!", ar: 'إنها خريطة يا جوجو!' },
+            { en: "It's a treasure map.", ar: 'إنها خريطة كنز.' },
+            { en: 'October 10, 1492. Wow! This map is older than we are!', ar: 'العاشر من أكتوبر 1492. يا للعجب! هذه الخريطة أقدم منّا!' },
+            { en: 'Did you clean your room, Tony?!', ar: 'هل نظّفتَ غرفتك يا توني؟!' },
+            { en: 'Yes, Mom!', ar: 'نعم يا أمي!' },
+            { en: "My room's cleaner than Jenny's!", ar: 'غرفتي أنظف من غرفة جيني!' },
+            { en: "Let's find the treasure!", ar: 'لنبحث عن الكنز!' },
+            { en: "This room isn't clean.", ar: 'هذه الغرفة ليست نظيفة.' }] },
+          { t: 'vocab', title: 'Vocabulary', src: 'ص 10', bonus: 'good → better • bad → worse • fun → more fun', cards: [
+            V('big → bigger', 'كبير ← أكبر', '🦁', 'big, bigger'), V('old → older', 'قديم/كبير في السن ← أكبر سنًّا', '👵', 'old, older'),
+            V('fast → faster', 'سريع ← أسرع', '🏎️', 'fast, faster'), V('tall → taller', 'طويل ← أطول', '🏢', 'tall, taller'),
+            V('thick → thicker', 'سميك ← أسمك', '📚', 'thick, thicker'), V('small → smaller', 'صغير ← أصغر', '🦋', 'small, smaller'),
+            V('young → younger', 'صغير في السن ← أصغر سنًّا', '👶', 'young, younger'), V('slow → slower', 'بطيء ← أبطأ', '🐢', 'slow, slower'),
+            V('short → shorter', 'قصير ← أقصر', '🧍', 'short, shorter'), V('thin → thinner', 'رفيع ← أرفع', '✏️', 'thin, thinner')] },
+          { t: 'target', title: 'Target', src: 'ص 10–11', rows: [
+            { q: "Who's faster, Tony or Jenny?", a: "Tony's faster.", qAr: 'من الأسرع، توني أم جيني؟', aAr: 'توني أسرع.' },
+            { q: 'Is a hippo bigger than an elephant?', a: "No, it isn't. An elephant is bigger than a hippo.", qAr: 'هل فرس النهر أكبر من الفيل؟', aAr: 'لا. الفيل أكبر من فرس النهر.' }],
+            frames: ['Is ____ bigger than ____?', 'Which is smaller, ____ or ____?', "Who's older, ____ or ____?"],
+            rule: { ai: true, title: 'ملاحظة من المنصة', text: 'لمقارنة شيئين نضيف <span class="en" dir="ltr">-er</span> إلى الصفة ثم نستخدم <span class="en" dir="ltr">than</span>. إذا انتهت الصفة بحرف ساكن واحد بعد حرف علة نكرّره: <span class="en" dir="ltr">big → bigger</span>، <span class="en" dir="ltr">thin → thinner</span>. وبعض الصفات لها شكل خاص: <span class="en" dir="ltr">good → better</span>، <span class="en" dir="ltr">bad → worse</span>، و<span class="en" dir="ltr">fun → more fun</span>.' } },
+          match('طابق الصفة بمقارنتها', compPairs),
+          mcq("Who's faster, Tony or Jenny?", ["Tony's faster.", "Tony's fastest.", 'Tony is more fast.', 'Jenny is Tony.'], "Tony's faster.", 'سؤال مقارنة بين اثنين، فنستخدم faster.', { en: true }),
+          mcq('Is a hippo bigger than an elephant?', ["No, it isn't. An elephant is bigger than a hippo.", 'Yes, it is. An elephant is bigger than a hippo.', "No, it isn't. A hippo is more big.", 'Yes, I did.'], "No, it isn't. An elephant is bigger than a hippo.", 'الفيل أكبر من فرس النهر، لذلك الجواب لا.', { en: true }),
+          order('رتّب الكلمات', 'An elephant is bigger than a hippo.', 'الصفة + er ثم than.'),
+          order('رتّب الكلمات لتكوّن السؤال', "Who's faster, Tony or Jenny?", ''),
+          type('good → ؟ (مقارنة)', 'better', 'مقارنة good هي better.', 'Bonus ص 10'),
+          type('bad → ؟ (مقارنة)', 'worse', 'مقارنة bad هي worse.', 'Bonus ص 10'),
+          type('fun → ؟ (مقارنة)', 'more fun', 'نكتب more قبل fun.', 'Bonus ص 10'),
+          listen('thinner', ['thinner', 'thicker', 'shorter', 'slower'], 'thinner', 'سمعتَ: thinner (أرفع).'),
+          { t: 'summary', items: ['<span class="en" dir="ltr">big → bigger • tall → taller • fast → faster</span>', '<span class="en" dir="ltr">Who\'s faster, Tony or Jenny? Tony\'s faster.</span>', '<span class="en" dir="ltr">An elephant is bigger than a hippo.</span>', '<span class="en" dir="ltr">good → better • bad → worse • fun → more fun</span>'] }
+        ]
+      },
+      {
+        id: 'u2l2', title: 'أصوات er • ir • ur • ear', ar: 'Earth • purse • bird',
+        steps: [
+          { t: 'intro', emoji: '🐦', title: 'صوت واحد بحروف مختلفة', src: 'ص 14',
+            text: 'هذه الكلمات تحتوي صوتًا متقاربًا رغم اختلاف حروفه. استمع ورددها.',
+            goals: ['أنطق الكلمات الست بشكل صحيح', 'أربط الصوت بحروفه: er / ir / ur / ear'] },
+          { t: 'sounds', title: 'Sounds and words', src: 'ص 14', end: true, items: [
+            { w: 'Earth', hl: 'ear', emoji: '🌍' }, { w: 'purse', hl: 'ur', emoji: '👜' }, { w: 'hurt', hl: 'ur', emoji: '🤕' },
+            { w: 'longer', hl: 'er', emoji: '🖌️' }, { w: 'bird', hl: 'ir', emoji: '🐦' }, { w: 'pearl', hl: 'ear', emoji: '🦪' }] },
+          mcq('🐦  bird — أي حرفين يكوّنان الصوت؟', ['ir', 'ur', 'er', 'ear'], 'ir', 'في bird: b-ir-d.', { en: true }),
+          mcq('🖌️  longer — أي حرفين في النهاية؟', ['er', 'ir', 'ur', 'ear'], 'er', 'في longer: long-er.', { en: true }),
+          mcq('👜  purse — أي حرفين يكوّنان الصوت؟', ['ur', 'ir', 'er', 'ear'], 'ur', 'في purse: p-ur-se.', { en: true }),
+          mcq('🌍  Earth — أي حروف يكوّنان الصوت؟', ['ear', 'ur', 'ir', 'er'], 'ear', 'في Earth: Ear-th.', { en: true }),
+          listen('pearl', ['pearl', 'purse', 'bird', 'hurt'], 'pearl', 'سمعتَ: pearl (لؤلؤة).'),
+          { t: 'summary', items: ['<span class="en" dir="ltr">Earth • purse • hurt • longer • bird • pearl</span>', 'حروف مختلفة: ear / ur / er / ir'] }
+        ]
+      }
+    ],
+    quiz: [
+      match('طابق الصفة بمقارنتها', compPairs),
+      mcq("Who's faster, Tony or Jenny?", ["Tony's faster.", "Tony's fastest.", 'Tony is more fast.', 'Jenny is Tony.'], "Tony's faster.", '', { en: true }),
+      mcq('Is a hippo bigger than an elephant?', ["No, it isn't. An elephant is bigger than a hippo.", 'Yes, it is.', "No, it isn't. A hippo is more big.", 'Yes, I did.'], "No, it isn't. An elephant is bigger than a hippo.", '', { en: true }),
+      order('رتّب الكلمات', 'An elephant is bigger than a hippo.', ''),
+      type('bad → ؟ (مقارنة)', 'worse', 'bad → worse'),
+      type('good → ؟ (مقارنة)', 'better', 'good → better'),
+      listen('younger', ['younger', 'older', 'thicker', 'smaller'], 'younger'),
+      mcq('🐦  bird — أي حرفين يكوّنان الصوت؟', ['ir', 'ur', 'er', 'ear'], 'ir', '', { en: true })
+    ]
+  };
+
+  // ---------- الوحدة 3 ----------
+  var superPairs = [['big', 'biggest'], ['old', 'oldest'], ['fast', 'fastest'], ['tall', 'tallest'], ['small', 'smallest'], ['thin', 'thinnest']];
+  var u3 = {
+    id: 'u3', n: 3, page: 15,
+    title: "We're going to find the treasure!", ar: 'سنجد الكنز!',
+    fn: 'الحديث عن الأشخاص والحيوانات والأشياء بصيغة التفضيل (الأكبر، الأسرع…)',
+    lessons: [
+      {
+        id: 'u3l1', title: 'الأعلى والأكبر', ar: 'the biggest • the fastest',
+        steps: [
+          { t: 'intro', emoji: '🤿', title: 'تحت الماء', src: 'ص 15–18',
+            text: 'يغوص الأصدقاء بحثًا عن الكنز ويقارنون الأسماك. ستتعلم أن تحدد «الأكبر» أو «الأسرع» بين عدد من الأشياء.',
+            goals: ['أفهم المحادثة تحت الماء', 'أكوّن صيغة التفضيل: <span class="en" dir="ltr">big → the biggest</span>', 'أسأل: <span class="en" dir="ltr">Who\'s the fastest in the class?</span>'] },
+          { t: 'dialogue', title: 'Conversation', src: 'ص 15', lines: [
+            { en: "We're going to find the treasure!", ar: 'سنجد الكنز!' },
+            { en: "Yes! Let's look underwater!", ar: 'نعم! لننظر تحت الماء!' },
+            { en: 'Look at the beautiful fish! That red one is big!', ar: 'انظر إلى السمك الجميل! ذاك الأحمر كبير!' },
+            { en: 'The blue one is bigger.', ar: 'الأزرق أكبر.' },
+            { en: 'Wow!', ar: 'يا للعجب!' },
+            { en: 'The treasure! Look!', ar: 'الكنز! انظر!' },
+            { en: 'Ouch! This green fish is the biggest.', ar: 'آه! هذه السمكة الخضراء هي الأكبر.' }] },
+          { t: 'vocab', title: 'Vocabulary', src: 'ص 16', bonus: 'best • worst • most fun', cards: [
+            V('biggest', 'الأكبر', '🐋'), V('oldest', 'الأكبر سنًّا', '👴'), V('fastest', 'الأسرع', '🏎️'), V('tallest', 'الأطول', '🏢'),
+            V('thickest', 'الأسمك', '📖'), V('smallest', 'الأصغر', '🐜'), V('youngest', 'الأصغر سنًّا', '👶'),
+            V('slowest', 'الأبطأ', '🐌'), V('shortest', 'الأقصر', '🧒'), V('thinnest', 'الأرفع', '✏️')] },
+          { t: 'target', title: 'Target', src: 'ص 16–17', rows: [
+            { q: "Who's the fastest in the class?", a: "Lisa's the fastest!", qAr: 'من الأسرع في الصف؟', aAr: 'ليزا هي الأسرع!' },
+            { q: "What's the biggest animal in the world?", a: 'The whale is the biggest.', qAr: 'ما أكبر حيوان في العالم؟', aAr: 'الحوت هو الأكبر.' }],
+            frames: ['Who has the longest ____?'],
+            rule: { ai: true, title: 'ملاحظة من المنصة', text: 'عندما نقارن بين أكثر من شيئين نقول <span class="en" dir="ltr">the + الصفة + est</span>، مثل <span class="en" dir="ltr">the biggest</span>. ونكرّر الحرف الأخير في <span class="en" dir="ltr">big → biggest</span> و<span class="en" dir="ltr">thin → thinnest</span>. وللتفضيل أشكال خاصة: <span class="en" dir="ltr">best • worst • most fun</span>.' } },
+          match('طابق الصفة بصيغة التفضيل', superPairs),
+          mcq("What's the biggest animal in the world?", ['The whale is the biggest.', 'The whale is bigger.', 'The whale is more big.', 'The whale did.'], 'The whale is the biggest.', 'السؤال عن الأكبر بين كل الحيوانات: the biggest.', { en: true }),
+          mcq("Lisa is ____ in the class.", ['the fastest', 'faster', 'fast than', 'more fast'], 'the fastest', 'بين كل الصف نستخدم the + est.', { en: true }),
+          mcq('An elephant is ____ a hippo.', ['bigger than', 'the biggest than', 'biggest', 'more big'], 'bigger than', 'مقارنة بين اثنين: -er + than. (من الوحدة 2)', { en: true }),
+          order('رتّب الكلمات', 'The whale is the biggest.', ''),
+          order('رتّب الكلمات لتكوّن السؤال', "Who's the fastest in the class?", ''),
+          type('tall → the ؟', 'tallest', 'tall → the tallest.'),
+          type('good → the ؟', 'best', 'good → better → the best.', 'Bonus ص 16'),
+          listen('youngest', ['youngest', 'oldest', 'shortest', 'slowest'], 'youngest', 'سمعتَ: youngest (الأصغر سنًّا).'),
+          { t: 'summary', items: ['<span class="en" dir="ltr">big → the biggest • fast → the fastest • tall → the tallest</span>', '<span class="en" dir="ltr">Who\'s the fastest in the class? Lisa\'s the fastest!</span>', '<span class="en" dir="ltr">best • worst • most fun</span>'] }
+        ]
+      },
+      {
+        id: 'u3l2', title: 'الأصوات والقراءة', ar: 'nest • tent • slept + قصة الباندا',
+        steps: [
+          { t: 'intro', emoji: '🐼', title: 'نهايات الكلمات وخبر عن الباندا', src: 'ص 20 و22',
+            text: 'ستتدرب على كلمات تنتهي بمجموعات حروف مثل st و nt، ثم تقرأ الخبر الصحفي من المراجعة 1 وتجيب عن أسئلته.',
+            goals: ['أنطق كلمات تنتهي بـ lt • st • ft • nt • pt', 'أقرأ خبرًا قصيرًا وأقارن بين الباندا والكوالا'] },
+          { t: 'sounds', title: 'Sounds and words', src: 'ص 20', end: true, items: [
+            { w: 'melt', hl: 'lt', emoji: '🧊' }, { w: 'longest', hl: 'st', emoji: '📏' }, { w: 'nest', hl: 'st', emoji: '🪺' },
+            { w: 'gift', hl: 'ft', emoji: '🎁' }, { w: 'tent', hl: 'nt', emoji: '⛺' }, { w: 'slept', hl: 'pt', emoji: '😴' }] },
+          mcq('🪺  nest — بماذا ينتهي؟', ['st', 'nt', 'ft', 'lt'], 'st', 'nest تنتهي بـ st.', { en: true }),
+          mcq('⛺  tent — بماذا ينتهي؟', ['nt', 'st', 'pt', 'ft'], 'nt', 'tent تنتهي بـ nt.', { en: true }),
+          mcq('😴  slept — بماذا ينتهي؟', ['pt', 'nt', 'st', 'lt'], 'pt', 'slept تنتهي بـ pt.', { en: true }),
+          { t: 'read', title: "Gogo's Daily Newspaper — Giant pandas go to Canada!", src: 'ص 22',
+            text: "There is a gift going to Canada. Do you know what it is? Two giant pandas are going to Canada. Lee-lee and Sing-sing are going to a zoo near Vancouver. Lee-lee is big, but Sing-sing is bigger than Lee-lee. Lee-lee is 12 years old and Sing-sing is 14 years old. Giant pandas come from China. They are bigger than koalas. But they are smaller than polar bears. There are not many pandas left on earth. There are fewer than 2,000 pandas. So let's study and learn about pandas. We can help pandas!",
+            qs: [
+              mcq('Where are Lee-lee and Sing-sing going?', ['To a zoo near Vancouver', 'To China', 'To a school', 'To the beach'], 'To a zoo near Vancouver', 'They are going to a zoo near Vancouver.', { en: true }),
+              mcq("Who's smaller, Lee-lee or Sing-sing?", ['Lee-lee', 'Sing-sing', 'Both are the same', 'The koala'], 'Lee-lee', 'Sing-sing is bigger than Lee-lee، فـ Lee-lee أصغر.', { en: true }),
+              mcq("Who's older, Lee-lee or Sing-sing?", ['Sing-sing', 'Lee-lee', 'Both are 12', 'Gogo'], 'Sing-sing', 'Sing-sing عمره 14 وLee-lee عمره 12.', { en: true }),
+              mcq('Where do giant pandas come from?', ['China', 'Canada', 'Vancouver', 'Africa'], 'China', 'Giant pandas come from China.', { en: true }),
+              mcq('Which is bigger, a giant panda or a koala?', ['A giant panda', 'A koala', 'They are the same', 'A polar bear is smaller'], 'A giant panda', 'They are bigger than koalas.', { en: true })] },
+          { t: 'summary', items: ['<span class="en" dir="ltr">melt • longest • nest • gift • tent • slept</span>', '<span class="en" dir="ltr">bigger than koalas • smaller than polar bears</span>'] }
+        ]
+      }
+    ],
+    quiz: [
+      match('طابق الصفة بصيغة التفضيل', superPairs),
+      mcq("What's the biggest animal in the world?", ['The whale is the biggest.', 'The whale is bigger.', 'The whale is more big.', 'The whale did.'], 'The whale is the biggest.', '', { en: true }),
+      mcq("Lisa is ____ in the class.", ['the fastest', 'faster', 'fast than', 'more fast'], 'the fastest', '', { en: true }),
+      order('رتّب الكلمات', 'The whale is the biggest.', ''),
+      type('small → the ؟', 'smallest', 'small → the smallest'),
+      type('bad → the ؟', 'worst', 'bad → worse → the worst', 'Bonus ص 16'),
+      listen('tallest', ['tallest', 'taller', 'smallest', 'thickest'], 'tallest'),
+      mcq('🪺  nest — بماذا ينتهي؟', ['st', 'nt', 'ft', 'lt'], 'st', '', { en: true })
+    ]
+  };
+
+  window.BOOKS.gogo6 = {
+    id: 'gogo6', title: 'Gogo Loves English 6', titleAr: 'جوجو يحب الإنجليزية 6', publisher: 'Pearson Longman', edition: 'New Edition',
+    toc: [
+      { id: 'u0', label: 'Do you know …?', ar: 'مراجعة كتاب الطالب 5', page: '1' },
+      { id: 'u1', unit: 'u1' }, { id: 'u2', unit: 'u2' }, { id: 'u3', unit: 'u3' },
+      { id: 'u4', label: 'Review 1', ar: 'مراجعة الوحدات 1–3', page: '21', n: 4 },
+      { id: 'u5', label: 'I usually look for cookies.', ar: 'السؤال عن طريقة الوصول للأماكن بظروف التكرار', page: '23', n: 5 },
+      { id: 'u6', label: "What's the matter?", ar: 'السؤال عن الأمراض ووصفها', page: '29', n: 6 },
+      { id: 'u7', label: "It's a magic hat.", ar: 'السؤال عن الأسعار', page: '35', n: 7 },
+      { id: 'u8', label: 'Review 2', ar: 'مراجعة الوحدات 5–7', page: '41', n: 8 },
+      { id: 'u9', label: 'I had a bad day.', ar: 'وصف اليوم', page: '43', n: 9 },
+      { id: 'u10', label: 'Turn left at the corner.', ar: 'السؤال عن الاتجاهات وإعطاؤها', page: '49', n: 10 },
+      { id: 'u11', label: "He's going to the mountain!", ar: 'وصف المشاعر', page: '55', n: 11 },
+      { id: 'u12', label: 'Review 3', ar: 'مراجعة الوحدات 9–11', page: '61', n: 12 },
+      { id: 'c1', label: 'Culture 1: World records', ar: 'أرقام قياسية في العالم', page: '63' },
+      { id: 'c2', label: 'Culture 2: Great vacations', ar: 'عطلات رائعة', page: '65' },
+      { id: 'b', label: 'Bonus 1, 2 and 3', ar: 'مراجعات إضافية', page: '67–72' },
+      { id: 'w', label: 'Word list', ar: 'قائمة الكلمات', page: '73' }
+    ],
+    units: [u1, u2, u3]
+  };
+})();
+
+</script>
+<!--/BOOKDATA-->
+<script>
+(function () {
+  'use strict';
+  var BOOK = (window.BOOKS || {}).gogo6;
+  if (!BOOK) { document.getElementById('app').innerHTML = '<p style="padding:20px">تعذر تحميل بيانات الكتاب.</p>'; return; }
+
+  /* ---------- أدوات ---------- */
+  var $app = document.getElementById('app');
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function attr(s) { return String(s).replace(/"/g, '&quot;'); }
+  var toastT; function toast(m) { var t = document.getElementById('toast'); t.textContent = m; t.className = 'on'; clearTimeout(toastT); toastT = setTimeout(function () { t.className = ''; }, 2200); }
+  function norm(s) { return String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/[.!?,]+$/g, '').replace(/\s+/g, ' ').trim(); }
+
+  /* ---------- الحفظ ---------- */
+  var KEY = 'muallim.v1.' + BOOK.id, store = null, persistent = false;
+  try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); store = localStorage; persistent = true; } catch (e) {}
+  function fresh() { return { points: 0, done: {}, resume: {}, quiz: {}, cards: {}, paid: {} }; }
+  function load() { try { var r = persistent ? store.getItem(KEY) : null; var o = r ? JSON.parse(r) : null; return o ? Object.assign(fresh(), o) : fresh(); } catch (e) { return fresh(); } }
+  var S = load();
+  function save() { if (persistent) { try { store.setItem(KEY, JSON.stringify(S)); } catch (e) {} } }
+  function addPoints(n) { S.points += n; save(); }
+  function award(key, n) { if (!S.paid[key]) { S.paid[key] = 1; addPoints(n); return true; } return false; }
+
+  /* ---------- الصوت (قراءة آلية للنص الإنجليزي) ---------- */
+  var voices = [];
+  function loadVoices() { try { voices = speechSynthesis.getVoices(); } catch (e) {} }
+  if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+  function say(t) {
+    if (!('speechSynthesis' in window)) { toast('هذا المتصفح لا يدعم تشغيل الصوت'); return; }
+    try {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(String(t).replace(/→/g, ',').replace(/____/g, ' '));
+      u.lang = 'en-US'; u.rate = 0.85;
+      var v = voices.filter(function (x) { return /en[-_]US/i.test(x.lang); })[0] || voices.filter(function (x) { return /^en/i.test(x.lang); })[0];
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch (e) { toast('تعذر تشغيل الصوت'); }
+  }
+
+  /* ---------- فهارس ---------- */
+  var lessons = [];
+  BOOK.units.forEach(function (u) { u.lessons.forEach(function (l) { l.unit = u; lessons.push(l); }); });
+  function lessonById(id) { return lessons.filter(function (l) { return l.id === id; })[0]; }
+  function unitById(id) { return BOOK.units.filter(function (u) { return u.id === id; })[0]; }
+  function cardId(l, k) { return l.id + ':' + k; }
+  var CARDS = {};
+  lessons.forEach(function (l) { l.steps.forEach(function (s) { if (s.t === 'vocab') s.cards.forEach(function (c, k) { CARDS[cardId(l, k)] = c; }); }); });
+  function nextLesson() { return lessons.filter(function (l) { return !S.done[l.id]; })[0] || null; }
+  function dueCards() { var now = Date.now(); return Object.keys(S.cards).filter(function (id) { return CARDS[id] && S.cards[id].due <= now; }); }
+  var DAY = 86400000, INTERVALS = [0, 0, DAY, 3 * DAY, 7 * DAY, 14 * DAY];
+
+  /* ---------- حالة التشغيل ---------- */
+  var run = null, rv = null;
+
+  function stateOf(i, j) { var s = run.st[i]; if (j === undefined || j === '') return s; s.sub = s.sub || []; s.sub[j] = s.sub[j] || {}; return s.sub[j]; }
+  function exOf(i, j) { var it = run.items[i]; return (j === undefined || j === '') ? it : it.qs[j]; }
+  function srcChip(s) { return s ? '<span class="chip src">من الكتاب · ' + s + '</span>' : ''; }
+
+  /* ---------- التمارين ---------- */
+  function init(ex, st) {
+    if (st.ready) return; st.ready = true;
+    if (ex.kind === 'mcq' || ex.kind === 'listen') st.ord = shuffle(ex.opts.map(function (_, k) { return k; }));
+    if (ex.kind === 'order') { st.toks = ex.answer.split(' '); st.bank = shuffle(st.toks.map(function (_, k) { return k; })); st.pick = []; }
+    if (ex.kind === 'match') { st.L = shuffle(ex.pairs.map(function (_, k) { return k; })); st.R = shuffle(ex.pairs.map(function (_, k) { return k; })); st.sel = null; st.ok = {}; st.miss = 0; st.shake = ''; }
+    if (ex.kind === 'type') { st.val = ''; }
+  }
+  function fbHtml(ex, st) {
+    if (!st.done) return '';
+    var shown = ex.answer || '';
+    if (st.good) return '<div class="fb ok">✓ أحسنت' + (ex.why ? '<small>' + ex.why + '</small>' : '') + '</div>';
+    return '<div class="fb no">✗ الجواب الصحيح: <span class="en" dir="ltr">' + shown + '</span>' + (ex.why ? '<small>' + ex.why + '</small>' : '') + '</div>';
+  }
+  function exHtml(ex, i, j) {
+    var st = stateOf(i, j); init(ex, st);
+    var d = 'data-i="' + i + '" data-j="' + (j === undefined ? '' : j) + '"';
+    var h = '<div class="q">';
+    if (ex.kind === 'mcq' || ex.kind === 'listen') {
+      if (ex.kind === 'listen') h += '<div class="qtext">اضغط واستمع ثم اختر ما سمعت</div><button class="listenbtn" data-a="say" data-t="' + attr(ex.say) + '" aria-label="تشغيل الصوت">🔊</button>';
+      else h += '<div class="qtext' + (ex.en ? ' en' : '') + '"' + (ex.en ? ' dir="ltr"' : '') + '>' + ex.q + '</div>';
+      h += '<div class="opts">' + st.ord.map(function (k) {
+        var cls = 'opt en';
+        if (st.done) { if (ex.opts[k] === ex.answer) cls += ' right'; else if (st.chosen === k) cls += ' wrong'; }
+        return '<button class="' + cls + '" data-a="pick" ' + d + ' data-k="' + k + '"' + (st.done ? ' disabled' : '') + '>' + ex.opts[k] + '</button>';
+      }).join('') + '</div>';
+    } else if (ex.kind === 'order') {
+      h += '<div class="qtext">' + ex.prompt + '</div>';
+      h += '<div class="drop ' + (st.done ? (st.good ? 'right' : 'wrong') : '') + '">' + st.pick.map(function (k, p) { return '<button class="tok" data-a="unpick" ' + d + ' data-p="' + p + '"' + (st.done ? ' disabled' : '') + '>' + st.toks[k] + '</button>'; }).join('') + '</div>';
+      h += '<div class="tokens">' + st.bank.map(function (k) { var used = st.pick.indexOf(k) >= 0; return '<button class="tok' + (used ? ' used' : '') + '" data-a="addtok" ' + d + ' data-k="' + k + '"' + (used || st.done ? ' disabled' : '') + '>' + st.toks[k] + '</button>'; }).join('') + '</div>';
+      if (!st.done) h += '<div class="foot"><button class="btn gold" data-a="checkorder" ' + d + (st.pick.length === st.toks.length ? '' : ' disabled') + '>تحقق</button></div>';
+    } else if (ex.kind === 'match') {
+      h += '<div class="qtext">' + ex.prompt + '</div><div class="mcols"><div class="opts">' + st.L.map(function (k) {
+        var cls = 'opt en' + (st.ok[k] ? ' matched' : '') + (st.sel === k ? ' sel' : '') + (st.shake === 'L' + k ? ' shake' : '');
+        return '<button class="' + cls + '" data-a="mL" ' + d + ' data-k="' + k + '"' + (st.ok[k] || st.done ? ' disabled' : '') + '>' + ex.pairs[k][0] + '</button>';
+      }).join('') + '</div><div class="opts">' + st.R.map(function (k) {
+        var cls = 'opt en' + (st.ok[k] ? ' matched' : '') + (st.shake === 'R' + k ? ' shake' : '');
+        return '<button class="' + cls + '" data-a="mR" ' + d + ' data-k="' + k + '"' + (st.ok[k] || st.done ? ' disabled' : '') + '>' + ex.pairs[k][1] + '</button>';
+      }).join('') + '</div></div>';
+      if (st.done) h += '<div class="fb ' + (st.miss ? 'no' : 'ok') + '">' + (st.miss ? 'أخطأتَ ' + st.miss + ' مرة — راجع الأزواج أعلاه.' : '✓ أحسنت، كل الأزواج صحيحة من أول مرة') + '</div>';
+    } else if (ex.kind === 'type') {
+      h += '<div class="qtext">' + ex.prompt + '</div>' + (ex.hint ? '<div class="mute">' + ex.hint + '</div>' : '');
+      h += '<input class="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text" data-i="' + i + '" data-j="' + (j === undefined ? '' : j) + '" value="' + attr(st.val || '') + '"' + (st.done ? ' disabled' : '') + ' placeholder="اكتب بالإنجليزية">';
+      if (!st.done) h += '<div class="foot"><button class="btn gold" data-a="checktype" ' + d + '>تحقق</button></div>';
+    }
+    h += fbHtml(ex, st);
+    return h + '</div>';
+  }
+  function finish(ex, st, i, j, good, pts) {
+    st.done = true; st.good = good; run.tot++; if (good) run.ok++;
+    if (run.mode === 'lesson' && good) award(run.id + ':' + i + ':' + (j === undefined ? '' : j), pts || 10);
+    save(); render(true);
+  }
+
+  /* ---------- الخطوات ---------- */
+  function hl(w, h, end) { var lw = w.toLowerCase(), p = end ? lw.lastIndexOf(h) : lw.indexOf(h); if (p < 0) return w; return w.slice(0, p) + '<mark>' + w.slice(p, p + h.length) + '</mark>' + w.slice(p + h.length); }
+  function stepHtml(it, i) {
+    var h = '';
+    switch (it.t) {
+      case 'intro':
+        return '<div class="big">' + it.emoji + '</div><h2>' + it.title + '</h2>' + srcChip(it.src) + '<p class="lead">' + it.text + '</p><h3>في هذا الدرس ستتعلم</h3><ul class="goals">' + it.goals.map(function (g) { return '<li>' + g + '</li>'; }).join('') + '</ul>';
+      case 'dialogue':
+        return '<h2 class="en" dir="ltr">' + it.title + '</h2>' + srcChip(it.src) + '<div class="chat">' + it.lines.map(function (l, k) {
+          return '<div class="bubble ' + (k % 2 ? 'b2' : '') + '"><button class="spk" data-a="say" data-t="' + attr(l.en) + '" aria-label="استمع">🔊</button><div class="en" dir="ltr">' + l.en + '</div><div class="ar">' + l.ar + '</div></div>';
+        }).join('') + '</div><p class="note ai">النص الإنجليزي من الكتاب، والترجمة العربية أضافتها المنصة للمساعدة.</p>';
+      case 'vocab':
+        return '<h2 class="en" dir="ltr">' + it.title + '</h2>' + srcChip(it.src) + '<div class="vgrid">' + it.cards.map(function (c) {
+          return '<button class="vcard" data-a="say" data-t="' + attr(c.say) + '"><span class="hear">🔊</span><span class="em">' + c.emoji + '</span><b class="en">' + c.en + '</b><span class="ar">' + c.ar + '</span></button>';
+        }).join('') + '</div>' + (it.bonus ? '<div class="bonus"><b>Bonus (من الكتاب):</b> <span class="en" dir="ltr">' + it.bonus + '</span></div>' : '') + '<p class="note ai">الرموز والمعاني العربية إضافة من المنصة. أُضيفت هذه البطاقات إلى قسم المراجعة.</p>';
+      case 'target':
+        h = '<h2 class="en" dir="ltr">' + it.title + '</h2>' + srcChip(it.src);
+        it.rows.forEach(function (r) {
+          h += '<div class="panel qa"><button class="en" data-a="say" data-t="' + attr(r.q) + '">🔊 ' + r.q + '</button><div class="ar">' + r.qAr + '</div><div class="a"><button class="en" data-a="say" data-t="' + attr(r.a) + '">🔊 ' + r.a + '</button><div class="ar">' + r.aAr + '</div></div></div>';
+        });
+        if (it.frames) { h += '<h3>أكمل بالكلمات التي تريدها (من الكتاب)</h3>' + it.frames.map(function (f) { return '<div class="frame en" dir="ltr">' + f + '</div>'; }).join(''); }
+        if (it.rule) h += '<div class="ai-box"><b>' + it.rule.title + ' — ليست من الكتاب</b>' + it.rule.text + '</div>';
+        return h;
+      case 'sounds':
+        return '<h2 class="en" dir="ltr">' + it.title + '</h2>' + srcChip(it.src) + '<p>اضغط على الكلمة لتسمعها، وانتبه للحروف الملوّنة.</p><div class="sgrid">' + it.items.map(function (x) {
+          return '<button class="sbtn" data-a="say" data-t="' + x.w + '"><span class="em">' + x.emoji + '</span><span class="en">' + hl(x.w, x.hl, it.end) + '</span></button>';
+        }).join('') + '</div>' + (it.note ? '<p class="note">' + it.note + '</p>' : '');
+      case 'read':
+        h = '<h2 class="en" dir="ltr" style="font-size:18px">' + it.title + '</h2>' + srcChip(it.src) + '<div class="passage en" dir="ltr">' + it.text + '</div><button class="btn ghost" style="margin-top:8px" data-a="say" data-t="' + attr(it.text) + '">🔊 استمع للنص</button>';
+        it.qs.forEach(function (q, j) { h += '<div class="sub">' + exHtml(q, i, j) + '</div>'; });
+        return h;
+      case 'summary':
+        return '<div class="big">🏆</div><h2>ملخص الدرس</h2><ul class="goals">' + it.items.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>';
+      case 'ex':
+        return exHtml(it, i);
+    }
+    return '';
+  }
+  function canNext(it, i) {
+    if (it.t === 'ex') return !!run.st[i].done;
+    if (it.t === 'read') return it.qs.every(function (_, j) { var s = run.st[i].sub && run.st[i].sub[j]; return s && s.done; });
+    return true;
+  }
+
+  /* ---------- مشغّل الدروس والاختبارات ---------- */
+  function startLesson(id) {
+    var l = lessonById(id); if (!l) { go('home'); return; }
+    var start = S.done[id] ? 0 : Math.min(S.resume[id] || 0, l.steps.length - 1);
+    run = { mode: 'lesson', id: id, lesson: l, items: l.steps, st: l.steps.map(function () { return {}; }), i: start, ok: 0, tot: 0 };
+    registerCards(l);
+  }
+  function registerCards(l) {
+    l.steps.forEach(function (s) { if (s.t === 'vocab') s.cards.forEach(function (c, k) { var id = cardId(l, k); if (!S.cards[id]) S.cards[id] = { box: 1, due: Date.now() }; }); });
+    save();
+  }
+  function startQuiz(uid) {
+    var u = unitById(uid); if (!u) { go('home'); return; }
+    var items = shuffle(u.quiz).slice(0, 8);
+    run = { mode: 'quiz', id: uid, unit: u, items: items, st: items.map(function () { return {}; }), i: 0, ok: 0, tot: 0 };
+  }
+  function vRun() {
+    var r = run, it = r.items[r.i], n = r.items.length, last = r.i === n - 1;
+    var h = '<main class="screen"><div class="rtop"><button class="x" data-a="exit" aria-label="خروج">✕</button><div class="bar"><i style="width:' + Math.round(r.i / n * 100) + '%"></i></div><span class="cnt">' + (r.i + 1) + '/' + n + '</span></div>';
+    h += stepHtml(it, r.i);
+    h += '<div class="foot">' + (r.i > 0 && r.mode === 'lesson' ? '<button class="btn ghost" data-a="prev">السابق</button>' : '') +
+      '<button class="btn primary" data-a="next"' + (canNext(it, r.i) ? '' : ' disabled') + '>' + (last ? (r.mode === 'quiz' ? 'عرض النتيجة' : 'إنهاء الدرس') : 'التالي') + '</button></div></main>';
+    return h;
+  }
+  function finishLesson() {
+    var l = run.lesson, first = !S.done[l.id];
+    S.done[l.id] = true; delete S.resume[l.id];
+    var got = first ? 20 : 0; if (first) addPoints(20); save();
+    var nx = nextLesson();
+    var h = '<main class="screen"><div class="result"><div class="big">🎉</div><h2>أحسنت! أنهيتَ الدرس</h2><p class="mute">' + l.title + '</p>' +
+      (got ? '<div class="pts">+' + got + ' نقطة للدرس</div>' : '') +
+      '<p>إجاباتك الصحيحة: <b>' + run.ok + ' من ' + run.tot + '</b></p><p class="mute">النقاط الكلية: ' + S.points + '</p>' +
+      '<div style="margin-top:20px;display:grid;gap:10px">' +
+      (nx ? '<button class="btn primary" data-a="go" data-p="lesson/' + nx.id + '">الدرس التالي: ' + nx.title + '</button>' : '') +
+      '<button class="btn" data-a="go" data-p="quiz/' + l.unit.id + '">اختبر نفسك في الوحدة</button>' +
+      '<button class="btn" data-a="go" data-p="review">راجع البطاقات</button>' +
+      '<button class="btn ghost" data-a="go" data-p="unit/' + l.unit.id + '">العودة للوحدة</button></div></div></main>';
+    run = null; return h + nav('toc');
+  }
+  function finishQuiz() {
+    var u = run.unit, ok = run.ok, tot = run.tot, pct = Math.round(ok / tot * 100);
+    var prev = S.quiz[u.id] || { ok: 0, pct: 0 }, delta = Math.max(0, ok - prev.ok) * 10;
+    if (delta) addPoints(delta);
+    S.quiz[u.id] = { ok: Math.max(ok, prev.ok), tot: tot, pct: Math.max(pct, prev.pct) }; save();
+    var stars = pct >= 90 ? 3 : pct >= 70 ? 2 : pct >= 50 ? 1 : 0;
+    var msg = stars === 3 ? 'ممتاز! أتقنتَ الوحدة' : stars === 2 ? 'جيد جدًا، راجع الأخطاء وستتقنها' : stars === 1 ? 'بداية جيدة، أعد الدروس ثم جرّب مرة أخرى' : 'لا بأس، أعد الدروس وحاول مرة أخرى';
+    var h = '<main class="screen"><div class="result"><div class="stars">' + '⭐'.repeat(stars) + '☆'.repeat(3 - stars) + '</div><h2>' + pct + '٪ — ' + ok + ' من ' + tot + '</h2><p>' + msg + '</p>' +
+      (delta ? '<div class="pts">+' + delta + ' نقطة</div>' : '<p class="mute">النقاط تُضاف عند تحسين أفضل نتيجة لك.</p>') +
+      '<div style="margin-top:20px;display:grid;gap:10px"><button class="btn primary" data-a="go" data-p="quiz/' + u.id + '">أعد الاختبار</button><button class="btn" data-a="go" data-p="unit/' + u.id + '">العودة للوحدة</button></div></div></main>';
+    run = null; return h + nav('toc');
+  }
+
+  /* ---------- الشاشات ---------- */
+  function nav(active) {
+    var t = [['home', '🏠', 'الرئيسية'], ['toc', '🗺️', 'المنهج'], ['review', '🔁', 'المراجعة'], ['progress', '🏆', 'إنجازاتي']];
+    return '<nav class="nav"><div>' + t.map(function (x) { return '<button class="' + (active === x[0] ? 'on' : '') + '" data-a="go" data-p="' + x[0] + '"><span>' + x[1] + '</span>' + x[2] + '</button>'; }).join('') + '</div></nav>';
+  }
+  function pctDone() { return Math.round(lessons.filter(function (l) { return S.done[l.id]; }).length / lessons.length * 100); }
+  function ringSvg(p) { var c = 2 * Math.PI * 34, o = c * (1 - p / 100); return '<svg class="ring" viewBox="0 0 84 84" role="img" aria-label="' + p + '٪"><circle cx="42" cy="42" r="34" fill="none" stroke="#CFE3E0" stroke-width="9"/><circle cx="42" cy="42" r="34" fill="none" stroke="#F0B429" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + o.toFixed(1) + '" transform="rotate(-90 42 42)"/><text x="42" y="48" text-anchor="middle" font-size="18" font-weight="800" fill="#083A4F">' + p + '٪</text></svg>'; }
+  function storageNote() { return persistent ? '' : '<div class="ai-box"><b>تنبيه</b>الحفظ الدائم غير متاح في هذه المعاينة، فسيُحفظ تقدمك حتى تغلق الصفحة فقط. افتح الملف مباشرة في المتصفح ليُحفظ تقدمك على جهازك.</div>'; }
+
+  function vHome() {
+    var nx = nextLesson(), due = dueCards().length, p = pctDone();
+    var h = '<main class="screen"><header class="hero"><span class="bubble-bg" style="width:30px;height:30px;left:90px;top:80px"></span><span class="bubble-bg" style="width:16px;height:16px;left:60px;top:120px"></span><div class="gogo" aria-hidden="true">🐲</div><div class="brand">مُعلِّم AI</div><h1>أهلًا بك في مغامرة الكنز</h1><div class="book en" dir="ltr">Gogo Loves<br>English 6</div><div class="coins">🪙 ' + S.points + ' نقطة</div></header>';
+    h += '<div class="panel flex" style="margin-top:-20px;position:relative">' + ringSvg(p) + '<div><b>تقدّمك في المنهج</b><div class="mute">' + lessons.filter(function (l) { return S.done[l.id]; }).length + ' من ' + lessons.length + ' دروس متاحة</div></div></div>';
+    if (nx) h += '<button class="btn primary" style="margin-top:14px" data-a="go" data-p="lesson/' + nx.id + '">' + (S.resume[nx.id] ? 'متابعة التعلم' : 'ابدأ التعلم') + ' — ' + nx.title + '</button>';
+    else h += '<div class="panel">أنهيتَ كل الدروس المتاحة 🎉 جرّب اختبارات الوحدات أو راجع البطاقات.</div>';
+    h += '<button class="btn" style="margin-top:10px" data-a="go" data-p="review">🔁 مراجعة اليوم' + (due ? ' — ' + due + ' بطاقة' : '') + '</button>';
+    h += '<p class="note">المتاح الآن: الوحدات 1 و2 و3 من الكتاب. باقي الوحدات ظاهرة في المنهج وستُضاف بالترتيب.</p>' + storageNote() + '</main>';
+    return h + nav('home');
+  }
+  function vToc() {
+    var h = '<main class="screen"><h2>خريطة المنهج</h2><p class="mute">مأخوذة من فهرس الكتاب. الأرقام هي صفحات الكتاب المطبوعة.</p><div class="path">';
+    BOOK.toc.forEach(function (t) {
+      var u = t.unit ? unitById(t.unit) : null;
+      if (u) {
+        var all = u.lessons.every(function (l) { return S.done[l.id]; });
+        h += '<button class="stop ' + (all ? 'done' : '') + '" data-a="go" data-p="unit/' + u.id + '"><div class="rail"><div class="node">' + (all ? '✓' : u.n) + '</div><div class="line"></div></div><div class="body"><div class="t en" dir="ltr">' + u.title + '</div><div>' + u.ar + '</div><div class="mute">ص ' + u.page + ' · ' + u.lessons.length + ' دروس' + (S.quiz[u.id] ? ' · أفضل اختبار ' + S.quiz[u.id].pct + '٪' : '') + '</div></div></button>';
+      } else {
+        h += '<div class="stop todo"><div class="rail"><div class="node">' + (t.n || '•') + '</div><div class="line"></div></div><div class="body"><div class="t en" dir="ltr">' + t.label + '</div><div>' + t.ar + '</div><div class="mute">ص ' + t.page + ' · لم تُضف بعد</div></div></div>';
+      }
+    });
+    return h + '</div></main>' + nav('toc');
+  }
+  function vUnit(id) {
+    var u = unitById(id); if (!u) return vToc();
+    var h = '<main class="screen"><button class="btn ghost" style="width:auto;padding:6px 0" data-a="go" data-p="toc">→ المنهج</button><span class="chip">الوحدة ' + u.n + ' · ص ' + u.page + '</span><h2 class="en" dir="ltr">' + u.title + '</h2><p>' + u.ar + '</p><p class="mute">' + u.fn + '</p><h3>الدروس</h3>';
+    u.lessons.forEach(function (l, k) {
+      var d = S.done[l.id];
+      h += '<button class="panel btn" style="justify-content:space-between;text-align:right;margin-top:10px" data-a="go" data-p="lesson/' + l.id + '"><span><b>' + (k + 1) + '. ' + l.title + '</b><br><span class="mute en" dir="ltr">' + l.ar + '</span></span><span>' + (d ? '✅' : (S.resume[l.id] ? '▶️' : '○')) + '</span></button>';
+    });
+    h += '<button class="btn gold" style="margin-top:16px" data-a="go" data-p="quiz/' + u.id + '">📝 اختبار الوحدة' + (S.quiz[u.id] ? ' (أفضل نتيجة ' + S.quiz[u.id].pct + '٪)' : '') + '</button></main>';
+    return h + nav('toc');
+  }
+  function vReview() {
+    if (rv && rv.q.length) {
+      var id = rv.q[0], c = CARDS[id];
+      var h = '<main class="screen"><div class="rtop"><button class="x" data-a="rvexit" aria-label="خروج">✕</button><div class="bar"><i style="width:' + Math.round(rv.n0 ? (rv.n0 - rv.q.length) / rv.n0 * 100 : 0) + '%"></i></div><span class="cnt">' + (rv.n0 - rv.q.length + 1) + '/' + rv.n0 + '</span></div>';
+      h += '<div class="panel flip"><div class="em">' + c.emoji + '</div><button class="en" data-a="say" data-t="' + attr(c.say) + '">🔊 ' + c.en + '</button>' + (rv.show ? '<div class="ar">' + c.ar + '</div>' : '<div class="mute">فكّر في المعنى ثم اكشفه</div>') + '</div>';
+      if (!rv.show) h += '<div class="foot"><button class="btn primary" data-a="rvshow">اكشف المعنى</button></div>';
+      else h += '<div class="foot row"><button class="btn" data-a="rvno">لسّا أتعلمها</button><button class="btn primary" data-a="rvyes">عرفتها ✓</button></div>';
+      return h + '</main>';
+    }
+    var due = dueCards(), tot = Object.keys(S.cards).length;
+    var h2 = '<main class="screen"><h2>المراجعة</h2>';
+    if (rv && rv.done) h2 += '<div class="panel">أنهيتَ الجولة 🎉 عرفتَ ' + rv.known + ' من ' + rv.n0 + ' بطاقة.</div>';
+    if (!tot) h2 += '<div class="panel">لا توجد بطاقات بعد. افتح درسًا يحتوي مفردات وستُضاف بطاقاته هنا تلقائيًا.</div><button class="btn primary" style="margin-top:12px" data-a="go" data-p="home">ابدأ من الرئيسية</button>';
+    else if (!due.length) h2 += '<div class="panel">لا بطاقات مستحقة الآن 👏 لديك ' + tot + ' بطاقة، وسترجع لك في موعدها.</div>';
+    else h2 += '<div class="panel"><b>' + due.length + ' بطاقة جاهزة للمراجعة</b><p class="mute">كل جولة تضم حتى 10 بطاقات. البطاقة التي تعرفها تتأخر عنك، والتي لا تعرفها تعود قريبًا.</p></div><button class="btn primary" style="margin-top:12px" data-a="rvstart">ابدأ المراجعة</button>';
+    return h2 + '</main>' + nav('review');
+  }
+  function vProgress() {
+    var done = lessons.filter(function (l) { return S.done[l.id]; }).length, quizzes = Object.keys(S.quiz).length;
+    var best = Object.keys(S.quiz).some(function (k) { return S.quiz[k].pct >= 80; });
+    var badges = [
+      ['🐚', 'أول درس', done >= 1], ['🧭', 'ثلاثة دروس', done >= 3], ['📝', 'أول اختبار', quizzes >= 1], ['🌟', 'نتيجة 80٪ أو أكثر', best],
+      ['🪙', '100 نقطة', S.points >= 100], ['🏴‍☠️', 'كل الدروس المتاحة', done === lessons.length]
+    ];
+    var h = '<main class="screen"><h2>إنجازاتي</h2><div class="panel flex">' + ringSvg(pctDone()) + '<div><div class="pts">🪙 ' + S.points + '</div><div class="mute">' + done + ' من ' + lessons.length + ' دروس · ' + Object.keys(S.cards).length + ' بطاقة مفردات</div></div></div><h3>الوحدات</h3>';
+    BOOK.units.forEach(function (u) {
+      var d = u.lessons.filter(function (l) { return S.done[l.id]; }).length;
+      h += '<div class="panel"><b class="en" dir="ltr">' + u.n + '. ' + u.title + '</b><div class="mute">الدروس: ' + d + '/' + u.lessons.length + ' · الاختبار: ' + (S.quiz[u.id] ? S.quiz[u.id].pct + '٪' : 'لم يُجرَ') + '</div></div>';
+    });
+    h += '<h3>الأوسمة</h3>' + badges.map(function (b) { return '<div class="badge ' + (b[2] ? 'on' : '') + '"><span class="em">' + b[0] + '</span><b>' + b[1] + '</b></div>'; }).join('');
+    h += '<h3>إعدادات</h3>' + (rvReset ? '<div class="panel"><b>هل تريد مسح كل التقدم؟</b><div class="foot row"><button class="btn" data-a="resetno">إلغاء</button><button class="btn primary" data-a="resetyes">نعم، امسح</button></div></div>' : '<button class="btn ghost" data-a="reset">مسح التقدم</button>') + storageNote();
+    return h + '</main>' + nav('progress');
+  }
+  var rvReset = false;
+
+  /* ---------- التوجيه ---------- */
+  function go(p) { if (location.hash === '#/' + p) render(); else { try { location.hash = '#/' + p; } catch (e) { render(); } } }
+  function render(keepScroll) {
+    var parts = (location.hash || '#/home').replace(/^#\//, '').split('/'), r = parts[0], a = parts[1], h = '';
+    if (r === 'lesson') { if (!run || run.mode !== 'lesson' || run.id !== a) startLesson(a); }
+    else if (r === 'quiz') { if (!run || run.mode !== 'quiz' || run.id !== a) startQuiz(a); }
+    else if (run) { if (run.mode === 'lesson') { S.resume[run.id] = run.i; save(); } run = null; }
+    if (r !== 'review' && rv && !rv.q.length) rv = null;
+    if (run && (r === 'lesson' || r === 'quiz')) h = vRun();
+    else if (r === 'toc') h = vToc();
+    else if (r === 'unit') h = vUnit(a);
+    else if (r === 'review') h = vReview();
+    else if (r === 'progress') h = vProgress();
+    else h = vHome();
+    $app.innerHTML = h;
+    if (!keepScroll) { try { window.scrollTo(0, 0); } catch (e) {} }
+  }
+
+  /* ---------- الأحداث ---------- */
+  var A = {
+    go: function (d) { go(d.p); },
+    say: function (d) { say(d.t); },
+    exit: function () { if (run && run.mode === 'lesson') { S.resume[run.id] = run.i; save(); var u = run.lesson.unit.id; run = null; go('unit/' + u); } else if (run) { var q = run.id; run = null; go('unit/' + q); } },
+    next: function () {
+      if (!run) return; var it = run.items[run.i]; if (!canNext(it, run.i)) return;
+      if (run.i < run.items.length - 1) { run.i++; if (run.mode === 'lesson') { S.resume[run.id] = run.i; save(); } render(); }
+      else { $app.innerHTML = run.mode === 'quiz' ? finishQuiz() : finishLesson(); try { window.scrollTo(0, 0); } catch (e) {} }
+    },
+    prev: function () { if (run && run.i > 0) { run.i--; render(); } },
+    pick: function (d) {
+      var ex = exOf(+d.i, d.j), st = stateOf(+d.i, d.j); if (st.done) return;
+      st.chosen = +d.k; finish(ex, st, +d.i, d.j === '' ? undefined : +d.j, ex.opts[+d.k] === ex.answer, 10);
+    },
+    addtok: function (d) { var st = stateOf(+d.i, d.j); if (st.done) return; st.pick.push(+d.k); render(true); },
+    unpick: function (d) { var st = stateOf(+d.i, d.j); if (st.done) return; st.pick.splice(+d.p, 1); render(true); },
+    checkorder: function (d) {
+      var ex = exOf(+d.i, d.j), st = stateOf(+d.i, d.j); if (st.done) return;
+      var s = st.pick.map(function (k) { return st.toks[k]; }).join(' ');
+      var good = [ex.answer].concat(ex.alts || []).some(function (x) { return norm(x) === norm(s); });
+      finish(ex, st, +d.i, d.j === '' ? undefined : +d.j, good, 10);
+    },
+    mL: function (d) { var st = stateOf(+d.i, d.j); if (st.done) return; st.sel = +d.k; st.shake = ''; render(true); },
+    mR: function (d) {
+      var ex = exOf(+d.i, d.j), st = stateOf(+d.i, d.j); if (st.done || st.sel === null) { if (!st.done) toast('اختر أولًا من العمود الأول'); return; }
+      if (st.sel === +d.k) { st.ok[st.sel] = true; st.sel = null; st.shake = ''; }
+      else { st.miss++; st.shake = 'R' + d.k; st.sel = null; }
+      if (Object.keys(st.ok).length === ex.pairs.length) { st.good = st.miss === 0; finish(ex, st, +d.i, d.j === '' ? undefined : +d.j, st.miss === 0, 10); }
+      else render(true);
+    },
+    checktype: function (d) {
+      var ex = exOf(+d.i, d.j), st = stateOf(+d.i, d.j); if (st.done) return;
+      var inp = document.querySelector('input.ans[data-i="' + d.i + '"][data-j="' + d.j + '"]'); var v = inp ? inp.value : st.val; st.val = v;
+      if (!norm(v)) { toast('اكتب إجابتك أولًا'); return; }
+      finish(ex, st, +d.i, d.j === '' ? undefined : +d.j, norm(ex.answer) === norm(v), 10);
+    },
+    rvstart: function () { var q = shuffle(dueCards()).slice(0, 10); rv = { q: q, n0: q.length, show: false, known: 0 }; render(); },
+    rvshow: function () { rv.show = true; render(true); },
+    rvyes: function () { var id = rv.q.shift(), c = S.cards[id]; c.box = Math.min(5, c.box + 1); c.due = Date.now() + INTERVALS[c.box]; rv.known++; addPoints(2); rv.show = false; if (!rv.q.length) rv.done = true; render(); },
+    rvno: function () { var id = rv.q.shift(), c = S.cards[id]; c.box = 1; c.due = Date.now(); save(); rv.show = false; if (!rv.q.length) rv.done = true; render(); },
+    rvexit: function () { rv = null; render(); },
+    reset: function () { rvReset = true; render(true); },
+    resetno: function () { rvReset = false; render(true); },
+    resetyes: function () { S = fresh(); save(); rvReset = false; run = null; rv = null; toast('تم مسح التقدم'); go('home'); }
+  };
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('[data-a]') : null; if (!el || el.disabled) return;
+    var f = A[el.dataset.a]; if (f) f(el.dataset);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('ans')) { var d = e.target.dataset; A.checktype({ i: d.i, j: d.j }); }
+  });
+  window.addEventListener('hashchange', function () { render(); });
+  window.__app = { A: A, render: render, go: go, S: function () { return S; }, run: function () { return run; } };
+  render();
+})();
+</script>
+</body>
+</html>
